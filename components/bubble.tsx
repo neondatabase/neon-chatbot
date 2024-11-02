@@ -6,12 +6,14 @@ import {
   IconSeo,
   IconTerminal2,
   IconTrashFilled,
+  IconX,
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 import { useChat } from "ai/react";
 import Markdown from "react-markdown";
+import { cn } from "@/lib/utils";
 
 export const Bubble = () => {
   const [open, setOpen] = useState(true);
@@ -101,151 +103,164 @@ export const Bubble = () => {
     },
   };
   return (
-    <div className="absolute bottom-10 right-10 flex flex-col items-end">
-      <AnimatePresence>
+    <div className="fixed bottom-10 right-10 flex flex-col items-end z-30">
+      <div className="fixed md:relative inset-0 z-20">
         {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 50, rotateX: 10 }}
-            animate={{ opacity: 1, y: 0, rotateX: 0 }}
-            exit={{ opacity: 0, y: 20, rotateX: -10 }}
-            transition={{ duration: 0.2 }}
-            className="mb-4 h-[40rem] w-[26rem] bg-gray-100 rounded-lg flex flex-col justify-between"
+          <button
+            onClick={() => setOpen(false)}
+            className="fixed md:hidden top-2 right-2 z-40"
           >
-            {!messages.length && (
-              <div className="p-5 grid grid-cols-2 gap-2  overflow-y-auto">
-                {blocks.map((block, index) => (
-                  <motion.button
-                    initial={{
-                      opacity: 0,
-                      filter: "blur(10px)",
-                    }}
-                    animate={{
-                      opacity: 1,
-                      filter: "blur(0px)",
-                    }}
-                    transition={{
-                      duration: 0.3,
-                      delay: 0.2 * index,
-                    }}
-                    key={block.title}
-                    onClick={() => {
-                      handleBlockClick(block.content);
-                    }}
-                    className="p-4 flex flex-col text-left justify-between rounded-2xl h-40 w-full bg-white"
-                  >
-                    {block.icon}
-                    <div>
-                      <div className="text-base font-bold text-black">
-                        {block.title}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {block.content}
-                      </div>
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-            )}
-            <div className="p-2 flex flex-1 overflow-y-auto">
-              <div className="flex flex-1 flex-col">
-                {messages.map((message) => (
-                  <div key={message.id}>
-                    {message.role === "user" ? (
-                      <UserMessage content={message.content} />
-                    ) : (
-                      <AIMessage content={message.content} />
-                    )}
-                  </div>
-                ))}
-                <div className="pb-10" ref={messagesEndRef} />{" "}
-                {/* Add this div as scroll anchor */}
-              </div>
-            </div>
-
+            <IconX />
+          </button>
+        )}
+        <AnimatePresence>
+          {open && (
             <motion.div
-              whileHover="animate"
-              className="flex justify-end items-center px-5 gap-1"
+              initial={{ opacity: 0, y: 50, rotateX: 10 }}
+              animate={{ opacity: 1, y: 0, rotateX: 0 }}
+              exit={{ opacity: 0, y: 20, rotateX: -10 }}
+              transition={{ duration: 0.2 }}
+              className="mb-4 h-screen md:h-[40rem] w-full md:w-[26rem] bg-gray-100 rounded-lg flex flex-col justify-between"
             >
-              <AnimatePresence>
-                {isLoading && (
+              {!messages.length && (
+                <div className="px-5 py-10 grid grid-cols-2 gap-2  overflow-y-auto">
+                  {blocks.map((block, index) => (
+                    <motion.button
+                      initial={{
+                        opacity: 0,
+                        filter: "blur(10px)",
+                      }}
+                      animate={{
+                        opacity: 1,
+                        filter: "blur(0px)",
+                      }}
+                      transition={{
+                        duration: 0.3,
+                        delay: 0.2 * index,
+                      }}
+                      key={block.title}
+                      onClick={() => {
+                        handleBlockClick(block.content);
+                      }}
+                      className="p-4 flex flex-col text-left justify-between rounded-2xl h-40 w-full bg-white"
+                    >
+                      {block.icon}
+                      <div>
+                        <div className="text-base font-bold text-black">
+                          {block.title}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {block.content}
+                        </div>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
+              <div className="p-2 flex flex-1 overflow-y-auto">
+                <div className="flex flex-1 flex-col">
+                  {messages.map((message) => (
+                    <div key={message.id}>
+                      {message.role === "user" ? (
+                        <UserMessage content={message.content} />
+                      ) : (
+                        <AIMessage content={message.content} />
+                      )}
+                    </div>
+                  ))}
+                  <div className="pb-10" ref={messagesEndRef} />{" "}
+                  {/* Add this div as scroll anchor */}
+                </div>
+              </div>
+
+              <motion.div
+                whileHover="animate"
+                className="flex justify-end items-center px-5 gap-1"
+              >
+                <AnimatePresence>
+                  {isLoading && (
+                    <motion.button
+                      whileHover="animate"
+                      className="rounded-full bg-red-500 px-2 py-0.5 w-14 text-white text-sm"
+                      onClick={stop}
+                      disabled={!isLoading}
+                      variants={buttonVariants}
+                      initial="initial"
+                      animate="animate"
+                      exit="exit"
+                    >
+                      <span>Stop</span>
+                    </motion.button>
+                  )}
+                </AnimatePresence>
+                {messages.length > 0 && (
                   <motion.button
-                    whileHover="animate"
-                    className="rounded-full bg-red-500 px-2 py-0.5 w-14 text-white text-sm"
-                    onClick={stop}
-                    disabled={!isLoading}
-                    variants={buttonVariants}
+                    className="rounded-full bg-gray-200 text-black px-2 py-0.5 text-sm flex items-center justify-center gap-1 overflow-hidden"
+                    onClick={() => setMessages([])}
+                    whileHover="hover"
                     initial="initial"
-                    animate="animate"
-                    exit="exit"
-                  >
-                    <span>Stop</span>
-                  </motion.button>
-                )}
-              </AnimatePresence>
-              {messages.length > 0 && (
-                <motion.button
-                  className="rounded-full bg-gray-200 text-black px-2 py-0.5 text-sm flex items-center justify-center gap-1 overflow-hidden"
-                  onClick={() => setMessages([])}
-                  whileHover="hover"
-                  initial="initial"
-                  animate="initial"
-                  variants={{
-                    initial: {
-                      width: "4.5rem",
-                    },
-                    hover: {
-                      width: "4.5rem",
-                    },
-                  }}
-                >
-                  <motion.div
+                    animate="initial"
                     variants={{
                       initial: {
-                        opacity: 0,
-                        width: 0,
+                        width: "4.5rem",
                       },
                       hover: {
-                        opacity: 1,
-                        width: "3.5rem",
+                        width: "4.5rem",
                       },
                     }}
                   >
-                    <IconTrashFilled className="h-4 w-4 flex-shrink-0" />
-                  </motion.div>
-                  <motion.span>Clear</motion.span>
-                </motion.button>
-              )}
+                    <motion.div
+                      variants={{
+                        initial: {
+                          opacity: 0,
+                          width: 0,
+                        },
+                        hover: {
+                          opacity: 1,
+                          width: "3.5rem",
+                        },
+                      }}
+                    >
+                      <IconTrashFilled className="h-4 w-4 flex-shrink-0" />
+                    </motion.div>
+                    <motion.span>Clear</motion.span>
+                  </motion.button>
+                )}
+              </motion.div>
+              <form
+                onSubmit={handleSubmit}
+                className="max-h-[10vh] relative py-1 px-5"
+              >
+                <textarea
+                  ref={inputRef}
+                  disabled={disabled}
+                  className={`px-4 w-full rounded-lg border-[#f2f2f2] text-black border py-[1rem] bg-white text-sm  [box-sizing:border-box] overflow-x-auto    inline-block focus:outline-none  transition duration-100`}
+                  placeholder={placeholderText}
+                  onFocus={() => setInputFocus(true)}
+                  onBlur={() => setInputFocus(false)}
+                  value={input}
+                  onChange={handleInputChange}
+                  onKeyDown={(event) => {
+                    if (event.key === "Enter" && !event.shiftKey) {
+                      event.preventDefault();
+                      handleSubmit();
+                    }
+                  }}
+                  rows={1}
+                />
+              </form>
             </motion.div>
-            <form
-              onSubmit={handleSubmit}
-              className="max-h-[10vh] relative py-1 px-5"
-            >
-              <textarea
-                ref={inputRef}
-                disabled={disabled}
-                className={`px-4 w-full rounded-lg border-[#f2f2f2] text-black border py-[1rem] bg-white text-sm  [box-sizing:border-box] overflow-x-auto    inline-block focus:outline-none  transition duration-100`}
-                placeholder={placeholderText}
-                onFocus={() => setInputFocus(true)}
-                onBlur={() => setInputFocus(false)}
-                value={input}
-                onChange={handleInputChange}
-                onKeyDown={(event) => {
-                  if (event.key === "Enter" && !event.shiftKey) {
-                    event.preventDefault();
-                    handleSubmit();
-                  }
-                }}
-                rows={1}
-              />
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
+      </div>
       <button
         onClick={() => {
           setOpen(!open);
         }}
-        className="h-14 w-14  group bg-white flex  hover:bg-primary cursor-pointer items-center justify-center rounded-full shadow-derek transition duration-200"
+        className={cn(
+          "h-14 w-14 relative z-10  group bg-white flex  hover:bg-primary cursor-pointer items-center justify-center rounded-full shadow-derek transition duration-200",
+          open ? "z-10" : "z-30"
+        )}
       >
         <IconMessage className="h-6 w-6 text-neutral-600 group-hover:text-black" />
       </button>
