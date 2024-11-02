@@ -1,5 +1,6 @@
 "use client";
 import {
+  IconArrowNarrowUp,
   IconAssembly,
   IconBrandMessenger,
   IconMessage,
@@ -229,12 +230,18 @@ export const Bubble = () => {
               </motion.div>
               <form
                 onSubmit={handleSubmit}
-                className="max-h-[10vh] relative py-1 px-5"
+                className="max-h-[10vh] py-1 px-5 relative"
               >
+                <button
+                  type="submit"
+                  className="absolute top-1/2 right-8 group -translate-y-1/2 bg-gray-100 h-8 w-8 rounded-full flex items-center justify-center"
+                >
+                  <IconArrowNarrowUp className="h-5 w-5 text-neutral-500 group-hover:text-black group-hover:-translate-y-0.5 group-hover:rotate-12 transition duration-200" />
+                </button>
                 <textarea
                   ref={inputRef}
                   disabled={disabled}
-                  className={`px-4 w-full rounded-lg border-[#f2f2f2] text-black border py-[1rem] bg-white text-sm  [box-sizing:border-box] overflow-x-auto    inline-block focus:outline-none  transition duration-100`}
+                  className={`px-4 w-full pr-10 rounded-lg border-[#f2f2f2] text-black border py-[1rem] bg-white text-sm  [box-sizing:border-box] overflow-x-auto    inline-block focus:outline-none  transition duration-100`}
                   placeholder={placeholderText}
                   onFocus={() => setInputFocus(true)}
                   onBlur={() => setInputFocus(false)}
