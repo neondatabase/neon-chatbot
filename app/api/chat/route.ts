@@ -9,7 +9,7 @@ export async function POST(req: Request) {
   const result = await streamText({
     model: openai("gpt-4-turbo"),
     system:
-      "You are a helpful assistant created by Neon.tech and Aceternity. Your job is to answer questions asked by the user in a polite and respectful manner.",
+      "You are a helpful assistant created by Neon.tech and Aceternity. Your job is to answer questions asked by the user in a polite and respectful manner. Always answer in markdown.",
     messages,
   });
 
