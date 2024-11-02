@@ -124,7 +124,7 @@ export const Bubble = () => {
               className="mb-4 h-screen md:h-[40rem] w-full md:w-[26rem] bg-gray-100 rounded-lg flex flex-col justify-between"
             >
               {!messages.length && (
-                <div className="px-5 py-10 grid grid-cols-2 gap-2  overflow-y-auto">
+                <div className="px-5 py-10 grid grid-cols-1 md:grid-cols-2 gap-2  overflow-y-auto">
                   {blocks.map((block, index) => (
                     <motion.button
                       initial={{
@@ -143,7 +143,7 @@ export const Bubble = () => {
                       onClick={() => {
                         handleBlockClick(block.content);
                       }}
-                      className="p-4 flex flex-col text-left justify-between rounded-2xl h-40 w-full bg-white"
+                      className="p-4 flex flex-col text-left justify-between rounded-2xl h-32 md:h-40 w-full bg-white"
                     >
                       {block.icon}
                       <div>
