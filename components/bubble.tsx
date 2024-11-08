@@ -4,6 +4,8 @@ import {
   IconAssembly,
   IconBrandMessenger,
   IconMessage,
+  IconPlayerStopFilled,
+  IconPlus,
   IconSeo,
   IconTerminal2,
   IconTrashFilled,
@@ -20,7 +22,6 @@ export const Bubble = () => {
   const [open, setOpen] = useState(true);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const [inputFocus, setInputFocus] = useState(false);
-  //   const [input, setInput] = useState("");
   const [disabled, setDisabled] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("Type a message...");
 
@@ -121,8 +122,47 @@ export const Bubble = () => {
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
               exit={{ opacity: 0, y: 20, rotateX: -10 }}
               transition={{ duration: 0.2 }}
-              className="mb-4 h-screen md:h-[40rem] w-full md:w-[26rem] bg-gray-100 rounded-lg flex flex-col justify-between"
+              className="mb-4 h-screen md:h-[46vh] min-h-[76vh] w-full md:w-[30rem] bg-gray-100 rounded-lg flex flex-col justify-between overflow-hidden"
             >
+              <div className="h-10 w-full bg-neutral-100 rounded-tr-lg rounded-tl-lg flex justify-between px-10 md:px-6 py-2 bg-gradient-to-l from-primary via-green-500 to-emerald-500">
+                <div className="font-medium text-sm flex items-center gap-2 text-white">
+                  <NeonLogo />
+                  Neon Chatbot
+                </div>
+                {messages.length > 0 && (
+                  <motion.button
+                    className="rounded-full bg-black text-white px-2 py-0.5 text-sm flex items-center justify-center gap-1 overflow-hidden"
+                    onClick={() => setMessages([])}
+                    whileHover="hover"
+                    initial="initial"
+                    animate="initial"
+                    variants={{
+                      initial: {
+                        width: "4rem",
+                      },
+                      hover: {
+                        width: "4rem",
+                      },
+                    }}
+                  >
+                    <motion.div
+                      variants={{
+                        initial: {
+                          opacity: 0,
+                          width: 0,
+                        },
+                        hover: {
+                          opacity: 1,
+                          width: "3.5rem",
+                        },
+                      }}
+                    >
+                      <IconPlus className="h-4 w-4 flex-shrink-0" />
+                    </motion.div>
+                    <motion.span>New</motion.span>
+                  </motion.button>
+                )}
+              </div>
               {!messages.length && (
                 <div className="px-5 py-10 grid grid-cols-1 md:grid-cols-2 gap-2  overflow-y-auto">
                   {blocks.map((block, index) => (
@@ -165,7 +205,9 @@ export const Bubble = () => {
                       {message.role === "user" ? (
                         <UserMessage content={message.content} />
                       ) : (
-                        <AIMessage content={message.content} />
+                        <>
+                          <AIMessage content={message.content} />
+                        </>
                       )}
                     </div>
                   ))}
@@ -174,70 +216,30 @@ export const Bubble = () => {
                 </div>
               </div>
 
-              <motion.div
-                whileHover="animate"
-                className="flex justify-end items-center px-5 gap-1"
-              >
-                <AnimatePresence>
-                  {isLoading && (
-                    <motion.button
-                      whileHover="animate"
-                      className="rounded-full bg-red-500 px-2 py-0.5 w-14 text-white text-sm"
-                      onClick={stop}
-                      disabled={!isLoading}
-                      variants={buttonVariants}
-                      initial="initial"
-                      animate="animate"
-                      exit="exit"
-                    >
-                      <span>Stop</span>
-                    </motion.button>
-                  )}
-                </AnimatePresence>
-                {messages.length > 0 && (
-                  <motion.button
-                    className="rounded-full bg-gray-200 text-black px-2 py-0.5 text-sm flex items-center justify-center gap-1 overflow-hidden"
-                    onClick={() => setMessages([])}
-                    whileHover="hover"
-                    initial="initial"
-                    animate="initial"
-                    variants={{
-                      initial: {
-                        width: "4.5rem",
-                      },
-                      hover: {
-                        width: "4.5rem",
-                      },
-                    }}
-                  >
-                    <motion.div
-                      variants={{
-                        initial: {
-                          opacity: 0,
-                          width: 0,
-                        },
-                        hover: {
-                          opacity: 1,
-                          width: "3.5rem",
-                        },
-                      }}
-                    >
-                      <IconTrashFilled className="h-4 w-4 flex-shrink-0" />
-                    </motion.div>
-                    <motion.span>Clear</motion.span>
-                  </motion.button>
-                )}
-              </motion.div>
               <form
                 onSubmit={handleSubmit}
                 className="max-h-[10vh] py-1 px-5 relative"
               >
-                <button
-                  type="submit"
-                  className="absolute top-1/2 right-8 group -translate-y-1/2 bg-gray-100 h-8 w-8 rounded-full flex items-center justify-center"
-                >
-                  <IconArrowNarrowUp className="h-5 w-5 text-neutral-500 group-hover:text-black group-hover:-translate-y-0.5 group-hover:rotate-12 transition duration-200" />
-                </button>
+                <AnimatePresence>
+                  {isLoading ? (
+                    <motion.button
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      onClick={stop}
+                      className="absolute top-1/2 right-8 group -translate-y-1/2 bg-red-500 h-8 w-8 rounded-full flex items-center justify-center"
+                    >
+                      <IconPlayerStopFilled className="h-5 w-5 text-white group-hover:twhite group-hover:-translate-y-0.5 group-hover:rotate-12 transition duration-200" />
+                    </motion.button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="absolute top-1/2 right-8 group -translate-y-1/2 bg-gray-100 h-8 w-8 rounded-full flex items-center justify-center"
+                    >
+                      <IconArrowNarrowUp className="h-5 w-5 text-neutral-500 group-hover:text-black group-hover:-translate-y-0.5 group-hover:rotate-12 transition duration-200" />
+                    </button>
+                  )}
+                </AnimatePresence>
                 <textarea
                   ref={inputRef}
                   disabled={disabled}
@@ -253,6 +255,7 @@ export const Bubble = () => {
                       handleSubmit();
                     }
                   }}
+                  style={{ resize: "none" }}
                   rows={1}
                 />
               </form>

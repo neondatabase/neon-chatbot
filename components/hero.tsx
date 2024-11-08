@@ -57,7 +57,7 @@ export function Hero() {
         }}
       />
 
-      <h2 className="text-balance relative z-50 mx-auto mb-4 mt-4 max-w-4xl text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
+      <h2 className="text-balance relative z-30 mx-auto mb-4 mt-4 max-w-4xl text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl">
         <Balancer>
           Neon x Aceternity{" "}
           <div className="relative mx-auto inline-block w-max [filter:drop-shadow(0px_1px_3px_rgba(27,_37,_80,_0.14))]">
@@ -67,7 +67,7 @@ export function Hero() {
           </div>
         </Balancer>
       </h2>
-      <p className="relative z-50 mx-auto mt-4 max-w-xl px-4 text-center text-base/6 text-gray-600 dark:text-gray-200">
+      <p className="relative z-30 mx-auto mt-4 max-w-xl px-4 text-center text-base/6 text-gray-600 dark:text-gray-200">
         Chat with the latest AI models, embed chatbot into your website with
         ease. Built in collaboration with Neon.tech and Aceternity
       </p>
