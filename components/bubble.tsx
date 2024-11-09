@@ -106,11 +106,14 @@ export const Bubble = () => {
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        setShowScrollButton(!entry.isIntersecting);
+        setTimeout(() => {
+          setShowScrollButton(!entry.isIntersecting);
+        }, 100);
       },
       {
         root: null,
-        threshold: 0.1,
+        threshold: 0.3,
+        rootMargin: "100px",
       }
     );
 
@@ -262,7 +265,7 @@ export const Bubble = () => {
                 onSubmit={handleSubmit}
                 className="max-h-[10vh] py-1 px-5 relative"
               >
-                {showScrollButton && !autoScroll && (
+                {showScrollButton && (
                   <button
                     onClick={scrollIntoView}
                     className="absolute -top-10 left-1/2 -translate-x-1/2  h-8 w-8 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors"
