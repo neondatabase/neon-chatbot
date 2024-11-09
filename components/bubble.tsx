@@ -1,5 +1,6 @@
 "use client";
 import {
+  IconArrowNarrowDown,
   IconArrowNarrowUp,
   IconAssembly,
   IconBrandMessenger,
@@ -24,6 +25,10 @@ export const Bubble = () => {
   const [inputFocus, setInputFocus] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("Type a message...");
+  const [autoScroll, setAutoScroll] = useState(false);
+  const [showScrollButton, setShowScrollButton] = useState(false);
+  const [isUserScrolledUp, setIsUserScrolledUp] = useState(false);
+  const messageHistoryRef = useRef<HTMLDivElement>(null);
 
   const {
     messages,
@@ -43,10 +48,6 @@ export const Bubble = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
 
   const blocks = [
     {
@@ -80,30 +81,69 @@ export const Bubble = () => {
     handleSubmit();
   };
 
-  const buttonVariants = {
-    initial: {
-      x: 20,
-    },
-    animate: {
-      x: 0,
-    },
-    exit: {
-      x: -20,
-      opacity: 0,
-    },
+  useEffect(() => {
+    const handleUserScroll = () => {
+      if (messageHistoryRef.current) {
+        const isAtBottom =
+          messageHistoryRef.current.scrollHeight -
+            messageHistoryRef.current.scrollTop ===
+          messageHistoryRef.current.clientHeight;
+        setIsUserScrolledUp(!isAtBottom);
+      }
+    };
+
+    messageHistoryRef.current?.addEventListener("scroll", handleUserScroll);
+
+    return () => {
+      messageHistoryRef.current?.removeEventListener(
+        "scroll",
+        handleUserScroll
+      );
+    };
+  }, []);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        setShowScrollButton(!entry.isIntersecting);
+      },
+      {
+        root: null,
+        threshold: 0.1,
+      }
+    );
+
+    if (messagesEndRef.current) {
+      const currentRef = messagesEndRef.current;
+      observer.observe(currentRef);
+      return () => {
+        observer.unobserve(currentRef);
+      };
+    }
+  }, [messages]);
+
+  useEffect(() => {
+    if (!isUserScrolledUp && messages.length) {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages, isUserScrolledUp]);
+
+  useEffect(() => {
+    if (autoScroll && messages.length > 0) {
+      scrollToBottom();
+    }
+  }, [messages, autoScroll]);
+
+  const scrollIntoView = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+      setShowScrollButton(false);
+      setIsUserScrolledUp(false);
+      setAutoScroll(true);
+    }
   };
 
-  const clearVariants = {
-    initial: {
-      width: "3.5rem",
-    },
-    animate: {
-      width: "4.5rem",
-    },
-    exit: {
-      width: "3.5rem",
-    },
-  };
   return (
     <div className="fixed bottom-10 right-10 flex flex-col items-end z-30">
       <div className="fixed md:relative inset-0 z-20">
@@ -126,8 +166,7 @@ export const Bubble = () => {
             >
               <div className="h-10 w-full bg-neutral-100 rounded-tr-lg rounded-tl-lg flex justify-between px-10 md:px-6 py-2 bg-gradient-to-l from-primary via-green-500 to-emerald-500">
                 <div className="font-medium text-sm flex items-center gap-2 text-white">
-                  <NeonLogo />
-                  Neon Chatbot
+                  <NeonLogoWhite />
                 </div>
                 {messages.length > 0 && (
                   <motion.button
@@ -198,7 +237,10 @@ export const Bubble = () => {
                   ))}
                 </div>
               )}
-              <div className="p-2 flex flex-1 overflow-y-auto">
+              <div
+                ref={messageHistoryRef}
+                className="p-2 flex flex-1 overflow-y-auto"
+              >
                 <div className="flex flex-1 flex-col">
                   {messages.map((message) => (
                     <div key={message.id}>
@@ -220,6 +262,14 @@ export const Bubble = () => {
                 onSubmit={handleSubmit}
                 className="max-h-[10vh] py-1 px-5 relative"
               >
+                {showScrollButton && !autoScroll && (
+                  <button
+                    onClick={scrollIntoView}
+                    className="absolute -top-10 left-1/2 -translate-x-1/2  h-8 w-8 rounded-full bg-white text-black flex items-center justify-center shadow-lg hover:bg-gray-100 transition-colors"
+                  >
+                    <IconArrowNarrowDown className="h-5 w-5" />
+                  </button>
+                )}
                 <AnimatePresence>
                   {isLoading ? (
                     <motion.button
@@ -363,6 +413,46 @@ const NeonLogo = () => {
           <rect width="29" height="28" fill="white" />
         </clipPath>
       </defs>
+    </svg>
+  );
+};
+
+const NeonLogoWhite = () => {
+  return (
+    <svg
+      width="158"
+      height="45"
+      viewBox="0 0 158 45"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-16 w-16"
+    >
+      <path
+        fill-rule="evenodd"
+        clip-rule="evenodd"
+        d="M0 7.61152C0 3.40779 3.44137 0 7.68651 0H36.8952C41.1404 0 44.5817 3.40779 44.5817 7.61152V32.2111C44.5817 36.5601 39.0241 38.4476 36.3287 35.014L27.902 24.2798V37.2964C27.902 41.0798 24.8048 44.1468 20.9842 44.1468H7.68651C3.44137 44.1468 0 40.739 0 36.5353V7.61152ZM7.68651 6.08921C6.83748 6.08921 6.14921 6.77077 6.14921 7.61152V36.5353C6.14921 37.376 6.83748 38.0576 7.68651 38.0576H21.2148C21.6393 38.0576 21.7528 37.7168 21.7528 37.2964V19.8412C21.7528 15.4922 27.3104 13.6047 30.0059 17.0383L38.4325 27.7725V7.61152C38.4325 6.77077 38.5129 6.08921 37.6639 6.08921H7.68651Z"
+        fill="white"
+      />
+      <path
+        d="M36.8954 0C41.1406 0 44.5819 3.40779 44.5819 7.61152V32.2111C44.5819 36.5601 39.0243 38.4476 36.3289 35.014L27.9022 24.2798V37.2964C27.9022 41.0798 24.805 44.1468 20.9844 44.1468C21.4089 44.1468 21.753 43.806 21.753 43.3857V19.8412C21.753 15.4922 27.3106 13.6047 30.0061 17.0383L38.4327 27.7725V1.5223C38.4327 0.681558 37.7445 0 36.8954 0Z"
+        fill="white"
+      />
+      <path
+        d="M75.1561 13.0033V24.5502L63.8496 13.0033H57.9648V31.8884H63.332V19.4782L75.6465 31.8884H80.5232V13.0033H75.1561Z"
+        fill="white"
+      />
+      <path
+        d="M90.4725 27.6797V24.3343H102.487V20.3145H90.4725V17.212H105.048V13.0033H84.9964V31.8884H105.348V27.6797H90.4725Z"
+        fill="white"
+      />
+      <path
+        d="M119.61 32.5089C127.157 32.5089 132.061 28.8398 132.061 22.4458C132.061 16.0519 127.157 12.3828 119.61 12.3828C112.063 12.3828 107.187 16.0519 107.187 22.4458C107.187 28.8398 112.063 32.5089 119.61 32.5089ZM119.61 28.0304C115.415 28.0304 112.826 26.007 112.826 22.4458C112.826 18.8847 115.442 16.8613 119.61 16.8613C123.806 16.8613 126.394 18.8847 126.394 22.4458C126.394 26.007 123.806 28.0304 119.61 28.0304Z"
+        fill="white"
+      />
+      <path
+        d="M152.632 13.0033V24.5502L141.326 13.0033H135.441V31.8884H140.808V19.4782L153.123 31.8884H157.999V13.0033H152.632Z"
+        fill="white"
+      />
     </svg>
   );
 };
