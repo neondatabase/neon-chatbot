@@ -56,8 +56,8 @@ export function HeroSectionWithBeamsAndGrid() {
         }}
       />
 
-      <h2 className="text-balance relative z-50 mx-auto mb-4 mt-4 max-w-4xl text-center text-3xl font-semibold tracking-tight text-gray-700 dark:text-neutral-300 md:text-7xl"></h2>
-      <p className="relative z-50 mx-auto mt-4 max-w-lg px-4 text-center text-base/6 text-gray-600 dark:text-gray-200">
+      <h2 className="text-balance relative z-50 mx-auto mb-4 mt-4 max-w-4xl text-center text-3xl font-semibold tracking-tight text-gray-700 md:text-7xl"></h2>
+      <p className="relative z-50 mx-auto mt-4 max-w-lg px-4 text-center text-base/6 text-gray-600 ">
         Get the best beam tracking services in the world with our state of the
         art, cutting edge beam detection technology.
       </p>
@@ -77,9 +77,9 @@ export function HeroSectionWithBeamsAndGrid() {
       </div>
       <div
         ref={containerRef}
-        className="relative mx-auto max-w-7xl rounded-[32px] border border-neutral-200/50 bg-neutral-100 p-2 backdrop-blur-lg dark:border-neutral-700 dark:bg-neutral-800/50 md:p-4"
+        className="relative mx-auto max-w-7xl rounded-[32px] border border-neutral-200/50 bg-neutral-100 p-2 backdrop-blur-lg  md:p-4"
       >
-        <div className="rounded-[24px] border border-neutral-200 bg-white p-2 dark:border-neutral-700 dark:bg-black">
+        <div className="rounded-[24px] border border-neutral-200 bg-white p-2 ">
           <Image
             src="https://assets.aceternity.com/pro/aceternity-landing.webp"
             alt="header"
@@ -104,7 +104,7 @@ export const BackgroundGrids = () => {
         <GridLineVertical className="left-0" />
         <GridLineVertical className="left-auto right-0" />
       </div>
-      <div className="relative h-full w-full bg-gradient-to-b from-transparent via-neutral-100 to-transparent dark:via-neutral-800">
+      <div className="relative h-full w-full bg-gradient-to-b from-transparent via-neutral-100 to-transparent ">
         <GridLineVertical className="left-0" />
         <GridLineVertical className="left-auto right-0" />
       </div>
@@ -313,7 +313,7 @@ const GridLineVertical = ({
         "[mask:linear-gradient(to_top,var(--background)_var(--fade-stop),transparent),_linear-gradient(to_bottom,var(--background)_var(--fade-stop),transparent),_linear-gradient(black,black)]",
         "[mask-composite:exclude]",
         "z-30",
-        "dark:bg-[linear-gradient(to_bottom,var(--color-dark),var(--color-dark)_50%,transparent_0,transparent)]",
+        "",
         className
       )}
     ></div>
