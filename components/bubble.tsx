@@ -203,6 +203,7 @@ export const Bubble = () => {
                   </motion.button>
                 )}
               </div>
+
               {!messages.length && (
                 <div className="px-5 py-10 grid grid-cols-1 md:grid-cols-2 gap-2  overflow-y-auto">
                   {blocks.map((block, index) => (
@@ -367,7 +368,7 @@ export function useAnimatedText(text: string) {
 
   useEffect(() => {
     const controls = animate(startingCursor, text.split(delimiter).length, {
-      duration: 4,
+      duration: 2,
       ease: "easeOut",
       onUpdate(latest) {
         setCursor(Math.floor(latest));
