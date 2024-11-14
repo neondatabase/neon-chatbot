@@ -167,7 +167,7 @@ export const Bubble = () => {
             >
               <div className="h-10 w-full bg-neutral-100 rounded-tr-lg rounded-tl-lg flex justify-between px-10 md:px-6 py-2 bg-gradient-to-l from-primary via-green-500 to-emerald-500">
                 <div className="font-medium text-sm flex items-center gap-2 text-white">
-                  <NeonLogoWhite />
+                  <NeonLogoWhite className="h-16 w-16" />
                 </div>
                 {messages.length > 0 && (
                   <motion.button
@@ -367,7 +367,6 @@ export function useAnimatedText(text: string) {
 
   useEffect(() => {
     const controls = animate(startingCursor, text.split(delimiter).length, {
-      // Tweak the animation here
       duration: 4,
       ease: "easeOut",
       onUpdate(latest) {

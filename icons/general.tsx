@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils";
+
 export const NeonLogo = () => {
   return (
     <svg
@@ -63,7 +65,7 @@ export const NeonLogo = () => {
   );
 };
 
-export const NeonLogoWhite = () => {
+export const NeonLogoWhite = ({ className }: { className?: string }) => {
   return (
     <svg
       width="158"
@@ -71,7 +73,7 @@ export const NeonLogoWhite = () => {
       viewBox="0 0 158 45"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
-      className="h-16 w-16"
+      className={cn("h-16 w-16", className)}
     >
       <path
         fill-rule="evenodd"

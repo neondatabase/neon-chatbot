@@ -24,11 +24,17 @@ const config: Config = {
       },
       animation: {
         "fade-in": "fadeIn 0.5s ease-out forwards",
+        flicker: "flicker 1.5s infinite",
       },
       keyframes: {
         fadeIn: {
           "0%": { opacity: "0", transform: "translateY(10px)" },
           "100%": { opacity: "1", transform: "translateY(0px)" },
+        },
+        flicker: {
+          "0%": { opacity: "0.5" },
+          "50%": { opacity: "1" },
+          "100%": { opacity: "0.5" },
         },
       },
     },
