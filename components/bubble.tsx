@@ -103,19 +103,12 @@ export const Bubble = () => {
   }, []);
 
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const [entry] = entries;
-        setTimeout(() => {
-          setShowScrollButton(!entry.isIntersecting);
-        }, 100);
-      },
-      {
-        root: null,
-        threshold: 0.3,
-        rootMargin: "100px",
-      }
-    );
+    const observer = new IntersectionObserver((entries) => {
+      const [entry] = entries;
+      setTimeout(() => {
+        setShowScrollButton(!entry.isIntersecting);
+      }, 100);
+    });
 
     if (messagesEndRef.current) {
       const currentRef = messagesEndRef.current;
@@ -348,7 +341,7 @@ const AIMessage = ({ content }: { content: string }) => {
       <div className="h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center bg-black">
         <NeonLogo />
       </div>
-      <div className="text-sm px-2 py-2 rounded-lg shadow-derek w-full bg-black text-white prose prose-sm prose-invert">
+      <div className="text-sm px-2 py-2 rounded-lg shadow-derek w-full bg-black text-white prose prose-sm prose-invert [&_*]:animate-fade-in">
         <Markdown>{content}</Markdown>
       </div>
     </div>
