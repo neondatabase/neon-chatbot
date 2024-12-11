@@ -1,6 +1,6 @@
 # Neon x Aceternity Chatbot Template
 
-A modern, interactive chatbot template built with Next.js, featuring real-time streaming responses powered by GPT-4 and persistent storage using Neon's serverless Postgres database.
+A modern, interactive chatbot template built with Next.js, AI SDK, Aceternity UI, and Neon's serverless Postgres.
 
 ![Banner](https://neon-chatbot.vercel.app/banner.png)
 
