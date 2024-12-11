@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@ai-sdk/openai": "^0.0.71",
+    "@neondatabase/serverless": "^0.10.4",
     "@tabler/icons-react": "^3.21.0",
     "@tailwindcss/typography": "^0.5.15",
     "ai": "^3.4.31",
