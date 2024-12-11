@@ -10,30 +10,30 @@ import {
   IconSeo,
   IconTerminal2,
   IconX,
+  IconMaximize,
 } from "@tabler/icons-react";
 import React, { useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
-  useMotionValue,
   animate,
 } from "framer-motion";
 
 import { useChat } from "ai/react";
 import Markdown from "react-markdown";
 import { cn } from "@/lib/utils";
-import { NeonLogo, NeonLogoWhite } from "@/icons/general";
 
 export const Bubble = () => {
   const [open, setOpen] = useState(true);
   const inputRef = useRef<HTMLTextAreaElement>(null);
-  const [inputFocus, setInputFocus] = useState(false);
+  // const [inputFocus, setInputFocus] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [placeholderText, setPlaceholderText] = useState("Type a message...");
   const [autoScroll, setAutoScroll] = useState(false);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [isUserScrolledUp, setIsUserScrolledUp] = useState(false);
   const messageHistoryRef = useRef<HTMLDivElement>(null);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const {
     messages,
@@ -146,8 +146,32 @@ export const Bubble = () => {
   };
 
   return (
-    <div className="fixed bottom-10 right-10 flex flex-col items-end z-30">
-      <div className="fixed md:relative inset-0 z-20">
+    <div className={cn(
+      "fixed bottom-10 right-10 flex flex-col items-end z-30 bubble-container",
+      isExpanded && "bottom-0 right-0 w-screen h-screen bg-black/30 backdrop-blur-sm flex items-center justify-center"
+    )}>
+      <motion.div
+        initial={false}
+        animate={isExpanded ? {
+          opacity: [0, 0, 1],
+          scale: [1, 0.98, 1],
+          y: [0, 10, 0],
+          rotateX: [0, 5, 0]
+        } : {
+          opacity: 1,
+          scale: 1,
+          y: 0,
+          rotateX: 0
+        }}
+        transition={{ 
+          duration: 0.3,
+          times: [0, 0.4, 1]
+        }}
+        className={cn(
+          "fixed md:relative inset-0 z-20",
+          isExpanded && "w-[80%] h-[80%] relative"
+        )}
+      >
         {open && (
           <button
             onClick={() => setOpen(false)}
@@ -163,45 +187,61 @@ export const Bubble = () => {
               animate={{ opacity: 1, y: 0, rotateX: 0 }}
               exit={{ opacity: 0, y: 20, rotateX: -10 }}
               transition={{ duration: 0.2 }}
-              className="mb-4 h-screen md:h-[46vh] min-h-[76vh] w-full md:w-[30rem] bg-gray-100 rounded-lg flex flex-col justify-between overflow-hidden"
+              className={cn(
+                "mb-4 h-screen md:h-[46vh] min-h-[76vh] w-full md:w-[30rem] bg-gray-100 rounded-lg flex flex-col justify-between overflow-hidden",
+                isExpanded && "w-full h-full md:h-full md:w-full min-h-0 mb-0"
+              )}
             >
-              <div className="h-10 w-full bg-neutral-100 rounded-tr-lg rounded-tl-lg flex justify-between px-10 md:px-6 py-2 bg-gradient-to-l from-primary via-green-500 to-emerald-500">
+              <div className="h-10 w-full bg-neutral-100 rounded-tr-lg rounded-tl-lg flex justify-between px-10 md:px-6 py-2 bg-gradient-to-l from-black via-gray-700 to-black">
                 <div className="font-medium text-sm flex items-center gap-2 text-white">
-                  <NeonLogoWhite className="h-16 w-16" />
-                </div>
-                {messages.length > 0 && (
-                  <motion.button
-                    className="rounded-full bg-black text-white px-2 py-0.5 text-sm flex items-center justify-center gap-1 overflow-hidden"
-                    onClick={() => setMessages([])}
-                    whileHover="hover"
-                    initial="initial"
-                    animate="initial"
-                    variants={{
-                      initial: {
-                        width: "4rem",
-                      },
-                      hover: {
-                        width: "4rem",
-                      },
+                  <button 
+                    onClick={() => {
+                      setIsExpanded(!isExpanded);
+                      const element = document.querySelector('.bubble-container');
+                      if (element) {
+                        element.classList.toggle('scale-110');
+                      }
                     }}
+                    className="hover:bg-gray-800 p-1 rounded-full transition-colors"
                   >
-                    <motion.div
+                    <IconMaximize className="h-4 w-4 text-white" />
+                  </button>
+                </div>
+                <div className="flex items-center gap-2">
+                  {messages.length > 0 && (
+                    <motion.button
+                      className="rounded-full bg-black text-white px-2 py-0.5 text-sm flex items-center justify-center gap-1 overflow-hidden"
+                      onClick={() => setMessages([])}
+                      whileHover="hover"
+                      initial="initial"
+                      animate="initial"
                       variants={{
                         initial: {
-                          opacity: 0,
-                          width: 0,
+                          width: "4rem",
                         },
                         hover: {
-                          opacity: 1,
-                          width: "3.5rem",
+                          width: "4rem",
                         },
                       }}
                     >
-                      <IconPlus className="h-4 w-4 flex-shrink-0" />
-                    </motion.div>
-                    <motion.span>New</motion.span>
-                  </motion.button>
-                )}
+                      <motion.div
+                        variants={{
+                          initial: {
+                            opacity: 0,
+                            width: 0,
+                          },
+                          hover: {
+                            opacity: 1,
+                            width: "3.5rem",
+                          },
+                        }}
+                      >
+                        <IconPlus className="h-4 w-4 flex-shrink-0" />
+                      </motion.div>
+                      <motion.span>New</motion.span>
+                    </motion.button>
+                  )}
+                </div>
               </div>
 
               {!messages.length && (
@@ -297,8 +337,8 @@ export const Bubble = () => {
                   disabled={disabled}
                   className={`px-4 w-full pr-10 rounded-lg border-[#f2f2f2] text-black border py-[1rem] bg-white text-sm  [box-sizing:border-box] overflow-x-auto    inline-block focus:outline-none  transition duration-100`}
                   placeholder={placeholderText}
-                  onFocus={() => setInputFocus(true)}
-                  onBlur={() => setInputFocus(false)}
+                  // onFocus={() => setInputFocus(true)}
+                  // onBlur={() => setInputFocus(false)}
                   value={input}
                   onChange={handleInputChange}
                   onKeyDown={(event) => {
@@ -314,14 +354,15 @@ export const Bubble = () => {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </motion.div>
       <button
         onClick={() => {
           setOpen(!open);
         }}
         className={cn(
-          "h-14 w-14 relative z-10  group bg-white flex  hover:bg-primary cursor-pointer items-center justify-center rounded-full shadow-derek transition duration-200",
-          open ? "z-10" : "z-30"
+          "h-14 w-14 relative z-10 group bg-white flex hover:bg-primary cursor-pointer items-center justify-center rounded-full shadow-derek transition duration-200",
+          open ? "z-10" : "z-30",
+          isExpanded && "hidden"
         )}
       >
         <IconMessage className="h-6 w-6 text-neutral-600 group-hover:text-black" />
@@ -332,9 +373,8 @@ export const Bubble = () => {
 
 const UserMessage = ({ content }: { content: string }) => {
   return (
-    <div className="p-2 rounded-lg flex gap-2 items-start">
-      <div className="h-8 w-8 rounded-full flex-shrink-0 bg-gradient-to-br from-pink-500 to-violet-600" />
-      <div className="text-sm px-2 py-2 rounded-lg shadow-derek w-fit bg-white text-black">
+    <div className="p-2 rounded-lg flex gap-2 items-start justify-end">
+      <div className="text-sm px-4 py-2 rounded-lg shadow-derek w-fit bg-gradient-to-br from-pink-500 to-violet-600 text-white">
         {content}
       </div>
     </div>
@@ -344,10 +384,9 @@ const UserMessage = ({ content }: { content: string }) => {
 const AIMessage = ({ content }: { content: string }) => {
   return (
     <div className="p-2 rounded-lg flex gap-2 items-start">
-      <div className="h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center bg-black">
-        <NeonLogo />
+      <div className="h-8 w-8 rounded-full flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-green-500 to-violet-600">
       </div>
-      <div className="text-sm px-2 py-2 rounded-lg shadow-derek w-full bg-black text-white prose prose-sm prose-invert">
+      <div className="text-sm px-2 py-2 rounded-lg shadow-derek w-fit bg-white text-black">
         <Markdown>{useAnimatedText(content)}</Markdown>
       </div>
     </div>
